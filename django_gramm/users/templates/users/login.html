@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    User Login
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+    <h1>User Login</h1>
+    <form class="form-with-validation" action="/users/login/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button class="form-submit btn btn-success">LOGIN</button>
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+    <div class="d-flex flex-column align-items-start">
+<a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-danger btn-lg d-flex align-items-center">
+    <i class="bi bi-google me-2"></i> Увійти через Google
+</a>
+
+        <a href="{% url 'social:begin' 'github' %}" class="btn btn-dark btn-lg d-flex align-items-center">
+        <i class="bi bi-github me-2"></i> Увійти через GitHub
+    </a>
+    </div>
+    </div>
+{% endblock %}

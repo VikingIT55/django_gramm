@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<link rel='icon' href='https://res.cloudinary.com/dn1lqn2zp/image/upload/v1728490538/favicon_yvsbyc.ico' type='image/x-icon'/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            Django App
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'bundles/styles.css' %}">
+</head>
+<body>
+    <nav class="navbar" style="background-color: #9e1c9e;">
+  <div class="container-fluid">
+      <a href="/" class="text-white">🏠</a> |
+      <a href="/posts/" class="text-white">📰</a> |
+      <a href="/posts/new-post/" class="text-white">NEW POST</a> |
+      {% if user.is_authenticated %}
+      <a href="{% url 'users:profile' request.user.username %}" class="text-white">MY PROFILE</a> |
+      <a href="/users/configurate/" class="text-white">CONFIGURATE</a> |
+        <form class="logout" action="{% url 'users:logout' %}" method="post">
+                {% csrf_token %}
+                <button class="logout-button btn btn-danger" aria-label="User Logout" title="User Logout">LOGOUT</button>
+            </form>
+
+      {% else %}
+            <a href="/users/login/" class="text-white">LOGIN</a> |
+            <a href="/users/register/" class="text-white">REGISTRATION</a>
+      {% endif %}
+  </div>
+    </nav>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+<script src="{% static 'bundles/bundle.js' %}"></script>
+</body>
+</html>

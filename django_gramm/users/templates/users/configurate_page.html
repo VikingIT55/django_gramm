@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Configurate
+{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+      <button class="form-submit btn btn-success">Submit</button>
+    </form>
+{% endblock %}

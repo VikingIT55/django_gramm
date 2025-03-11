@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+{% block title %}Profile Page{% endblock title %}
+{% block content %}
+    {% load cloudinary %}
+    {% cloudinary profile.avatar quality='auto' width=600 height=400 crop='pad' %}
+    <h1>{{ profile.first_name }}</h1>
+    <h1>{{ profile.last_name }}</h1>
+    <h1>{{ profile.bio }}</h1>
+{% if user.is_authenticated %}
+    {% if profile.user != request.user %}
+            <form action="{% url 'users:follow_unfollow' profile.user.username %}" method="post" class="follow_unfollow">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary follow">
+                {% if is_following %}
+                Unfollow
+                {% else %}
+                Follow
+                {% endif %}
+                </button>
+            </form>
+    {% endif %}
+{% endif %}
+<h1 class="followers-count">Followers: {{ profile.number_of_followers }}</h1>
+<h1 class="following-count">Following: {{ profile.number_of_following }}</h1>
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.follow_unfollow').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        var csrftoken = form.find('input[name="csrfmiddlewaretoken"]').val();
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            dataType: 'json',
+            success: function(response) {
+                if (response.subscription) {
+                    form.find('button').text('Unfollow');
+                } else {
+                    form.find('button').text('Follow');
+                }
+                form.parent().find('.followers-count').text('Followers: ' + response.followers);
+                form.parent().find('.following-count').text('Following: ' + response.following);
+            },
+            error: function(response) {
+                alert('Something wrong ');
+            }
+        });
+    });
+});
+
+</script>
+{% endblock scripts %}
+{% endblock content %}
